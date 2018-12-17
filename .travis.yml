@@ -3,13 +3,20 @@ services:
   - docker
 
 before_install:
-  - docker build -t micsco/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t hlfmike/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run micsco/react-test npm test -- --coverage
+  - docker run hlfmike/react-test npm test -- --coverage
 
 after_success:
-  - docker build -t micsco/multi-client ./client
-  - docker build -t micsco/multi-nginx ./nginx
-  - docker build -t micsco/multi-server ./server
-  - docker build -t micsco/multi-worker ./worker
+  - docker build -t hlfmike/multi-client ./client
+  - docker build -t hlfmike/multi-nginx ./nginx
+  - docker build -t hlfmike/multi-server ./server
+  - docker build -t hlfmike/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push hlfmike/multi-client
+  - docker push hlfmike/multi-nginx
+  - docker push hlfmike/multi-server
+  - docker push hlfmike/multi-worker
